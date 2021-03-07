@@ -26,16 +26,4 @@ export default class User extends BaseModel {
   	if(user.$dirty.password)
   	  user.password = await Hash.make(user.password);
   }
-
-  public setPassword(password: string){
-  	this.password = password;
-  }
-
-  static get hidden(){
-  	return ["password"];
-  }
-
-  static get visible () {
-  	return ["id", "username", "email"];
-  }
 }

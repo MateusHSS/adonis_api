@@ -28,4 +28,8 @@ Route.group(() => {
 	Route.get("/:id", "UsersController.show");
 	Route.put("/:id", "UsersController.update");
 	Route.delete("/:id", "UsersController.destroy");
-}).prefix("/users");
+}).prefix("/users").middleware("auth");
+
+Route.group(() => {
+	Route.post("/login", "AuthController.login");
+}).prefix("/auth");

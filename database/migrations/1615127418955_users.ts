@@ -13,6 +13,7 @@ export default class Users extends BaseSchema {
 		  .unique()
 		  .notNullable();
   		table.string("password").notNullable();
+  		table.string("remember_me_token").nullable();
   		table.timestamps(true, true);
   	});
   }
