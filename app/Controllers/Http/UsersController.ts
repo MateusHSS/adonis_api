@@ -2,13 +2,13 @@ import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import User from "App/Models/User";
 
 export default class UsersController {
-	public async index ({}: HttpContextContract) {
+	public async index (): Promise<User[]> {
 		const users = await User.all();
 
 		return users;
 	}
 
-	public async store ({ request, response }: HttpContextContract) {
+	public async store ({ request, response }: HttpContextContract): Promise<User | void> {
 		const data = request.only(["username", "email", "password"]);
 
 		const usernameInUse = await User.findBy("username", data.username);
@@ -26,7 +26,7 @@ export default class UsersController {
 		return user;
 	}
 
-	public async show ({ params, response }: HttpContextContract) {
+	public async show ({ params, response }: HttpContextContract): Promise<User | void> {
 		const data = await User.findBy("id", params.id);
 
 		if(!data)
@@ -35,7 +35,7 @@ export default class UsersController {
 		return data;
 	}
 
-	public async update ({ request, params }: HttpContextContract) {
+	public async update ({ request, params }: HttpContextContract): Promise<User | void> {
 		const data = request.only(["username", "email", "password"]);
 
 		const user = await User.findOrFail(params.id);
@@ -46,7 +46,7 @@ export default class UsersController {
 		return user;
 	}
 
-	public async destroy ({ params }: HttpContextContract) {
+	public async destroy ({ params }: HttpContextContract): Promise<void> {
 		const user = await User.findOrFail(params.id);
 
 		await user.delete();
