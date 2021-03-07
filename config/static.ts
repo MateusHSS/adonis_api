@@ -5,10 +5,10 @@
  * file.
  */
 
-import { AssetsConfig } from '@ioc:Adonis/Core/Static'
+import { AssetsConfig } from "@ioc:Adonis/Core/Static";
 
 const staticConfig: AssetsConfig = {
-  /*
+	/*
   |--------------------------------------------------------------------------
   | Enabled
   |--------------------------------------------------------------------------
@@ -20,9 +20,9 @@ const staticConfig: AssetsConfig = {
   |
   |
   */
-  enabled: true,
+	enabled: true,
 
-  /*
+	/*
   |--------------------------------------------------------------------------
   | Handling Dot Files
   |--------------------------------------------------------------------------
@@ -36,9 +36,9 @@ const staticConfig: AssetsConfig = {
   | - allow: Serve the file contents
   |
   */
-  dotFiles: 'ignore',
+	dotFiles: "ignore",
 
-  /*
+	/*
   |--------------------------------------------------------------------------
   | Generating Etag
   |--------------------------------------------------------------------------
@@ -47,9 +47,9 @@ const staticConfig: AssetsConfig = {
   | to utilize the cache when file hasn't been changed.
   |
   */
-  etag: true,
+	etag: true,
 
-  /*
+	/*
   |--------------------------------------------------------------------------
   | Set Last Modified
   |--------------------------------------------------------------------------
@@ -58,7 +58,7 @@ const staticConfig: AssetsConfig = {
   | the file system's last modified value.
   |
   */
-  lastModified: true,
-}
+	lastModified: true,
+};
 
-export default staticConfig
+export default staticConfig;
