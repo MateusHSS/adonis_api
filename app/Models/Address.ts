@@ -34,6 +34,7 @@ export default class Address extends BaseModel {
   public updatedAt: DateTime
 
   @belongsTo(()=> Client, {
+  	localKey: "id",
   	foreignKey: "address_id",
   })
   client: BelongsTo<typeof Client>

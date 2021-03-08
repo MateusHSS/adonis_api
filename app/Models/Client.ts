@@ -1,7 +1,6 @@
 import { DateTime } from "luxon";
-import { BaseModel, column, hasOne } from "@ioc:Adonis/Lucid/Orm";
+import { BaseModel, column, hasOne, HasOne } from "@ioc:Adonis/Lucid/Orm";
 import Contact from "./Contact";
-import { HasOne } from "@ioc:Adonis/Lucid/Relations";
 import Address from "./Address";
 
 export default class Client extends BaseModel {
@@ -27,12 +26,14 @@ export default class Client extends BaseModel {
   public updatedAt: DateTime
 
   @hasOne(() => Contact, {
-  	foreignKey: "contact_id",
+  	localKey: "contact_id",
+  	foreignKey: "id"
   })
   public contact: HasOne<typeof Contact>;
 
   @hasOne(() => Address, {
-  	foreignKey: "address_id",
+  	localKey: "address_id",
+  	foreignKey: "id",
   })
   public address: HasOne<typeof Address>;
 }

@@ -1,42 +1,73 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
+import Address from "App/Models/Address";
 import Client from "App/Models/Client";
+import Contact from "App/Models/Contact";
 
 export default class ClientsController {
 	public async index (): Promise<Client[]> {
-		const clients = Client.all();
+		const clients = await Client.query().preload("address").preload("contact");
 
 		return clients;
 	}
 
 	public async store ({ request, response }: HttpContextContract): Promise<Client | void> {
-		const { name, cpf, contact, address} = request.only(["name", "cpf", "contact", "address"]);
+		const data = request.only(["name", "cpf", "contact", "address"]);
 
-		const cpfAlreadyRegistered = await Client.findBy("cpf", cpf);
+		const cpfAlreadyRegistered = await Client.findBy("cpf", data.cpf);
 
 		if(cpfAlreadyRegistered)
 			return response.status(400).json({ message: "CPF already registered" });
 
-		const client = await Client.create({ name, cpf });
-    
-		if(contact)
-			await client.related("contact").create(contact);
-    
-		if(address)
-			await client.related("address").create(address);
+		const client = await Client.create({ name: data.name, cpf: data.cpf });
+
+		if(data.contact){
+			const contact = await Contact.create(data.contact);
+
+			client.contact_id = contact.id;
+			await client.related("contact").save(contact);
+		}
+
+		if(data.address){
+			const address = await Address.create(data.address);
+
+			client.address_id = address.id;
+			await client.related("address").save(address);
+		}
+
+		client.save();
 
 		return client;
 	}
 
 	public async show ({ params }: HttpContextContract): Promise<Client | void> {
+
+		const client = await Client.findOrFail(params.id);
     
-		const client = await Client.findOrFail(params.client_id);
+		await client.load("address");
+		await client.load("contact");
 
 		return client;
 	}
 
-	public async update ({}: HttpContextContract) {
+	public async update ({ request, params }: HttpContextContract): Promise<Client | void> {
+		const data = request.only(["name", "contact", "address"]);
+		const client = await Client.findOrFail(params.id);
+		await client.load("address");
+		await client.load("contact");
+
+		client.merge(data);
+		await client.save();
+		client.contact.merge(data.contact);
+		await client.contact.save();
+		client.address.merge(data.address);
+		await client.address.save();
+		
+		return client;
 	}
 
-	public async destroy ({}: HttpContextContract) {
+	public async destroy ({ params }: HttpContextContract): Promise<void>{
+		const client = await Client.findOrFail(params.id);
+
+		await client.delete();
 	}
 }

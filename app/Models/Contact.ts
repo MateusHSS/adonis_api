@@ -22,6 +22,7 @@ export default class Contact extends BaseModel {
   public updatedAt: DateTime
 
   @belongsTo(() => Client, {
+  	localKey: "id",
   	foreignKey: "contact_id",
   })
   public client: BelongsTo<typeof Client>;
