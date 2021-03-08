@@ -25,6 +25,7 @@ Route.on("/").render("welcome");
 Route.group(() => {
 	Route.resource("users", "UsersController").apiOnly();
 	Route.resource("clients", "ClientsController").apiOnly();
+	Route.resource("services", "ServicesController").apiOnly();
 }).middleware("auth");
 
 Route.group(() => {
