@@ -23,12 +23,9 @@ import Route from "@ioc:Adonis/Core/Route";
 Route.on("/").render("welcome");
 
 Route.group(() => {
-	Route.get("/", "UsersController.index");
-	Route.post("/", "UsersController.store");
-	Route.get("/:id", "UsersController.show");
-	Route.put("/:id", "UsersController.update");
-	Route.delete("/:id", "UsersController.destroy");
-}).prefix("/users").middleware("auth");
+	Route.resource("users", "UserController").apiOnly();
+	Route.resource("clients", "ClientsController").apiOnly();
+}).middleware("auth");
 
 Route.group(() => {
 	Route.post("/login", "AuthController.login");
