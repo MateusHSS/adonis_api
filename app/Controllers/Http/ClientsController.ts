@@ -55,12 +55,11 @@ export default class ClientsController {
 		await client.load("address");
 		await client.load("contact");
 
-		client.merge(data);
-		await client.save();
-		client.contact.merge(data.contact);
-		await client.contact.save();
-		client.address.merge(data.address);
-		await client.address.save();
+		await client.merge(data).save();
+		
+		await client.contact.merge(data.contact).save();
+
+		await client.address.merge(data.address).save();
 		
 		return client;
 	}

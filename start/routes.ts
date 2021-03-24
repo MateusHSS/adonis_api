@@ -21,11 +21,17 @@
 import Route from "@ioc:Adonis/Core/Route";
 
 Route.group(() => {
+
+	Route.resource("/clients", "ClientsController").apiOnly();
+	Route.group(() => {
+		Route.resource("/:client_id/address", "AddressesController").apiOnly().except(["index"]).as("address");
+	}).prefix("/clients").as("client");
+
 	Route.resource("users", "UsersController").apiOnly();
-	Route.resource("clients", "ClientsController").apiOnly();
 	Route.resource("services", "ServicesController").apiOnly();
 }).middleware("auth");
 
 Route.group(() => {
-	Route.post("/login", "AuthController.login");
+	Route.post("/login", "AuthController.login").as("login");
+	Route.post("/logout", "AuthController.logout").as("logout");
 }).prefix("/auth");
