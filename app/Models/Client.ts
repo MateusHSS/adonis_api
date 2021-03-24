@@ -1,7 +1,7 @@
+import { BaseModel, beforeDelete, beforeSave, column, hasOne, HasOne } from "@ioc:Adonis/Lucid/Orm";
 import { DateTime } from "luxon";
-import { BaseModel, column, hasOne, HasOne } from "@ioc:Adonis/Lucid/Orm";
-import Contact from "./Contact";
 import Address from "./Address";
+import Contact from "./Contact";
 
 export default class Client extends BaseModel {
   @column({ isPrimary: true })
@@ -10,7 +10,10 @@ export default class Client extends BaseModel {
   @column()
   public name: string;
 
-  @column()
+  @column({
+  	prepare: (val: string) => val.replace(/\D/g, ""),
+  	consume: (val: string) => val.replace(/^([\d]{3})([\d]{3})([\d]{3})([\d]{2})$/, "$1.$2.$3-$4")
+  })
   public cpf: string;
 
   @column()
@@ -27,7 +30,7 @@ export default class Client extends BaseModel {
 
   @hasOne(() => Contact, {
   	localKey: "contact_id",
-  	foreignKey: "id"
+  	foreignKey: "id",
   })
   public contact: HasOne<typeof Contact>;
 
@@ -36,4 +39,29 @@ export default class Client extends BaseModel {
   	foreignKey: "id",
   })
   public address: HasOne<typeof Address>;
+
+  @beforeSave()
+  public static format_cpf(client: Client): void{
+  	client.cpf = client.cpf.replace(/\D/g, "");
+  }
+
+  @beforeDelete()
+  public static async remove_contact(client: Client): Promise<void>{
+  	const contact = await Contact.findBy("id", client.contact_id);
+
+  	if(contact){
+  		await contact.delete();
+  	}
+
+  }
+
+  public static async remove_address(client: Client): Promise<void>{
+  	const address = await Address.findBy("id", client.address_id);
+
+  	if(address){
+  		await address.delete();
+  	}
+  	
+  }
+  
 }

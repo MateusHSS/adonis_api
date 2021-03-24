@@ -6,6 +6,6 @@ export default class AuthController {
 		const password = request.input("password");
 
 		const token = await auth.use("api").attempt(email, password);
-		return token.toJSON();
+		return (token.toJSON());
 	}
 }

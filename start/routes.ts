@@ -20,8 +20,6 @@
 
 import Route from "@ioc:Adonis/Core/Route";
 
-Route.on("/").render("welcome");
-
 Route.group(() => {
 	Route.resource("users", "UsersController").apiOnly();
 	Route.resource("clients", "ClientsController").apiOnly();
