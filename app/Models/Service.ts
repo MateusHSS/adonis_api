@@ -1,5 +1,5 @@
-import { DateTime } from "luxon";
 import { BaseModel, beforeSave, column } from "@ioc:Adonis/Lucid/Orm";
+import { DateTime } from "luxon";
 import slugify from "slugify";
 
 export default class Service extends BaseModel {
@@ -20,6 +20,12 @@ export default class Service extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  // Relations ================================== //
+
+  
+
+  // Hooks ==================================== //
 
   @beforeSave()
   public static generateSlug(service: Service): void {

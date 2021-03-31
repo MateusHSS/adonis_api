@@ -35,7 +35,7 @@ export default class AddressesController {
 		return client.address;
 	}
 
-	public async update ({ request, params, response }: HttpContextContract): Promise<Address | void> {
+	public async update ({ request, params }: HttpContextContract): Promise<Address | void> {
 		const data = request.only(["zip_code", "street", "number", "district", "city", "state", "country"]);
 
 		const client = await Client.findOrFail(params.client_id);

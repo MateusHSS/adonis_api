@@ -34,7 +34,7 @@ export default class ClientsController {
 			await client.related("address").save(address);
 		}
 
-		client.save();
+		await client.save();
 
 		return client;
 	}

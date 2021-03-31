@@ -1,7 +1,8 @@
-import { BaseModel, beforeDelete, beforeSave, column, hasOne, HasOne } from "@ioc:Adonis/Lucid/Orm";
+import { BaseModel, beforeDelete, beforeSave, column, hasMany, hasOne, HasOne, HasMany } from "@ioc:Adonis/Lucid/Orm";
 import { DateTime } from "luxon";
 import Address from "./Address";
 import Contact from "./Contact";
+import ServiceOrder from "./ServiceOrder";
 
 export default class Client extends BaseModel {
   @column({ isPrimary: true })
@@ -28,6 +29,8 @@ export default class Client extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
 
+  // Relations ============================= //
+
   @hasOne(() => Contact, {
   	localKey: "contact_id",
   	foreignKey: "id",
@@ -39,6 +42,14 @@ export default class Client extends BaseModel {
   	foreignKey: "id",
   })
   public address: HasOne<typeof Address>;
+
+  @hasMany(() => ServiceOrder, {
+  	foreignKey: "client_id",
+  	localKey: "id"
+  })
+  public service_orders: HasMany<typeof ServiceOrder>
+
+  // Hooks ==================================== //
 
   @beforeSave()
   public static format_cpf(client: Client): void{
