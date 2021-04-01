@@ -1,9 +1,9 @@
+import Env from "@ioc:Adonis/Core/Env";
+import { afterSave, BaseModel, column, hasOne, HasOne, manyToMany, ManyToMany } from "@ioc:Adonis/Lucid/Orm";
 import { DateTime } from "luxon";
-import { BaseModel, column, hasOne, manyToMany, HasOne, ManyToMany, afterSave } from "@ioc:Adonis/Lucid/Orm";
-import Service from "./Service";
 import Client from "./Client";
 import Employee from "./Employee";
-import Env from "@ioc:Adonis/Core/Env";
+import Service from "./Service";
 
 export default class ServiceOrder extends BaseModel {
   @column({ isPrimary: true })
@@ -33,6 +33,8 @@ export default class ServiceOrder extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
 
+  // Relations ==================================== //
+
   @hasOne(() => Client, {
   	localKey: "client_id",
   	foreignKey: "id"
@@ -50,7 +52,8 @@ export default class ServiceOrder extends BaseModel {
   	localKey: "id",
   	relatedKey: "id",
   	pivotForeignKey: "service_order_id",
-  	pivotRelatedForeignKey: "service_id"
+  	pivotRelatedForeignKey: "service_id",
+  	pivotColumns: ["service_description"]
   })
   public services: ManyToMany<typeof Service>
 

@@ -1,4 +1,4 @@
-import { BaseModel, beforeSave, column } from "@ioc:Adonis/Lucid/Orm";
+import { BaseModel, beforeSave, column, computed } from "@ioc:Adonis/Lucid/Orm";
 import { DateTime } from "luxon";
 import slugify from "slugify";
 
@@ -20,6 +20,11 @@ export default class Service extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  @computed()
+  public get service_description(): string{
+  	return this.$extras.pivot_service_description;
+  }
 
   // Relations ================================== //
 
