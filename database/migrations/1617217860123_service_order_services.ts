@@ -8,6 +8,7 @@ export default class ServiceOrderServices extends BaseSchema {
   		table.increments("id");
   		table.integer("service_id").unsigned();
   		table.integer("service_order_id").unsigned();
+  		// table.string("description").nullable();
   		table.timestamps(true, true);
   	});
   }

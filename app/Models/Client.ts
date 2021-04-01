@@ -4,24 +4,36 @@ import Address from "./Address";
 import Contact from "./Contact";
 import ServiceOrder from "./ServiceOrder";
 
+const CNPJ_SIZE = 14;
+const CPF_SIZE = 11;
+
 export default class Client extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
   @column()
-  public name: string;
+  public name: string
 
   @column({
   	prepare: (val: string) => val.replace(/\D/g, ""),
-  	consume: (val: string) => val.replace(/^([\d]{3})([\d]{3})([\d]{3})([\d]{2})$/, "$1.$2.$3-$4")
+  	consume: (val: string) => {
+  		if(val.length == CNPJ_SIZE)
+  		  return val.replace(/^([\d]{2})([\d]{3})([\d]{3})([\d]{4})([\d]{2})$/, "$1.$2.$3/$4-$5");
+      
+  		if(val.length == CPF_SIZE)
+  			return val.replace(/^([\d]{3})([\d]{3})([\d]{3})([\d]{2})$/, "$1.$2.$3-$4");
+  	}
   })
-  public cpf: string;
+  public cpf_cnpj: string
 
   @column()
-  public contact_id: number;
+  public doc_type: string
 
   @column()
-  public address_id: number;
+  public contact_id: number
+
+  @column()
+  public address_id: number
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
@@ -52,8 +64,16 @@ export default class Client extends BaseModel {
   // Hooks ==================================== //
 
   @beforeSave()
-  public static format_cpf(client: Client): void{
-  	client.cpf = client.cpf.replace(/\D/g, "");
+  public static format_doc(client: Client): void{
+  	client.cpf_cnpj = client.cpf_cnpj.replace(/\D/g, "");
+  }
+
+  public static set_doc_type(client: Client): void{
+  	if(client.cpf_cnpj.length == CPF_SIZE){
+  		client.doc_type = "cpf";
+  	}else if(client.cpf_cnpj.length == CNPJ_SIZE){
+  		client.doc_type = "cnpj";
+  	}
   }
 
   @beforeDelete()

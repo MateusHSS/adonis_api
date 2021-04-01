@@ -3,6 +3,7 @@ import { BaseModel, column, hasOne, manyToMany, HasOne, ManyToMany, afterSave } 
 import Service from "./Service";
 import Client from "./Client";
 import Employee from "./Employee";
+import Env from "@ioc:Adonis/Core/Env";
 
 export default class ServiceOrder extends BaseModel {
   @column({ isPrimary: true })
@@ -17,7 +18,10 @@ export default class ServiceOrder extends BaseModel {
   @column()
   public internal_proccess: string
 
-  @column()
+  @column({
+  	prepare: (val: string) => new Date(val.split("/").reverse().join("-") + Env.get("TIME_ZONE")),
+  	consume: (val: Date) => val.toLocaleDateString("pt-br")
+  })
   public deadline: Date
 
   @column()

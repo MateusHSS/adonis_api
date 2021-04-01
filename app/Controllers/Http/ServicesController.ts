@@ -36,10 +36,12 @@ export default class ServicesController {
 
 		const service = await Service.findOrFail(params.id);
 
-		const serviceAlreadyExists = await Service.findBy("slug", slugify(data.title, { replacement: "_", lower: true, locale: "pt-BR" }));
+		if(data.title){
+			const serviceAlreadyExists = await Service.findBy("slug", slugify(data.title, { replacement: "_", lower: true, locale: "pt-BR" }));
 
-		if(serviceAlreadyExists){
-			return response.status(400).json({ error: true, message: "Title already in use!" }) ; 
+			if(serviceAlreadyExists){
+				return response.status(400).json({ error: true, message: "Title already in use!" }) ; 
+			}
 		}
 
 		service.merge(data);

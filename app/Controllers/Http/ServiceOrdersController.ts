@@ -1,5 +1,4 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
-import Service from "App/Models/Service";
 import ServiceOrder from "App/Models/ServiceOrder";
 
 export default class ServiceOrdersController {
@@ -10,7 +9,7 @@ export default class ServiceOrdersController {
 	}
 
 	public async store ({ request }: HttpContextContract) {
-		const data = request.only([ "employee_id", "client_id", "services", "description", "deadline" ]);
+		const data = request.only(["employee_id", "client_id", "services", "description", "deadline"]);
 
 		const service_order = await ServiceOrder.create({ 
 			employee_id: data.employee_id,
@@ -19,13 +18,7 @@ export default class ServiceOrdersController {
 			deadline: data.deadline
 		});
 
-		for (let i = 0; i < data.services.length; i++) {
-			const service_id = data.services[i];
-      
-			const service = await Service.findOrFail(service_id);
-
-			await service_order.related("services").save(service);
-		}
+		await service_order.related("services").sync(data.services);
 
 		await service_order.save();
 
@@ -35,12 +28,33 @@ export default class ServiceOrdersController {
 
 	}
 
-	public async show ({}: HttpContextContract) {
+	public async show ({ params }: HttpContextContract) {
+		const service_order = await ServiceOrder.findOrFail(params.id);
+
+		await service_order.load("services");
+
+		return service_order;
 	}
 
-	public async update ({}: HttpContextContract) {
+	public async update ({ request, params }: HttpContextContract) {
+		const service_order = await ServiceOrder.findOrFail(params.id);
+
+		const data = request.only(["description", "deadline", "services" ]);
+
+		service_order.merge(data);
+		await service_order.related("services").sync(data.services);
+
+		await service_order.save();
+
+		await service_order.preload("services");
+
+		return service_order;
 	}
 
-	public async destroy ({}: HttpContextContract) {
+	public async destroy ({ params }: HttpContextContract) {
+		const service_order = await ServiceOrder.findOrFail(params.id);
+		await service_order.related("services").detach();
+		
+		await service_order.delete();
 	}
 }
